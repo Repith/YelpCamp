@@ -7,12 +7,14 @@ const ExpressError = require("./utils/ExpressError");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
+const cookieParser = require("cookie-parser");
 
 const session = require("express-session");
 const flash = require("connect-flash");
 
-const campgrounds = require("./routes/campgrounds");
-const reviews = require("./routes/reviews");
+const userRoutes = require("./routes/users");
+const campgroundsRoutes = require("./routes/campgrounds");
+const reviewsRoutes = require("./routes/reviews");
 
 const app = express();
 const path = require("path");
@@ -30,6 +32,7 @@ db.once("open", () => {
   console.log("Database connected");
 });
 
+//Implementation of EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.engine("ejs", ejsMate);
@@ -38,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(flash());
+app.use(cookieParser());
 
 // Passport and session config
 const sessionConfig = {
@@ -61,6 +65,8 @@ passport.deserializeUser(User.deserializeUser());
 
 // Sharing flash messages for all templates
 app.use((req, res, next) => {
+  console.log(req.session);
+  res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
@@ -71,9 +77,10 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-//Getting routes for campgrounds
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+//Getting routes
+app.use("/", userRoutes);
+app.use("/campgrounds", campgroundsRoutes);
+app.use("/campgrounds/:id/reviews", reviewsRoutes);
 
 // Error handlers
 app.all("*", (req, res, next) => {
