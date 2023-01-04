@@ -4,7 +4,10 @@ const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError");
-const Joi = require("joi");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
+
 const session = require("express-session");
 const flash = require("connect-flash");
 
@@ -36,6 +39,7 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(flash());
 
+// Passport and session config
 const sessionConfig = {
   secret: "secret",
   resave: false,
@@ -46,9 +50,16 @@ const sessionConfig = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
-app.use(session(sessionConfig));
 
-// Sharing 'success' within all tempates
+app.use(session(sessionConfig));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Sharing flash messages for all templates
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
