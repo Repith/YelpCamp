@@ -41,11 +41,14 @@ router.post(
   passport.authenticate("local", {
     failureFlash: true,
     failureRedirect: "/login",
+    keepSessionInfo: true,
   }),
   (req, res) => {
     req.flash("success", "Welcome back our Camp!");
-    const redirectUrl = req.cookies.originalUrl || "/campgrounds";
-    res.cookie("originalUrl", "");
+    // const redirectUrl = req.cookie.originalUrl || "/campgrounds";
+    // res.cookie("originalUrl", "");
+    const redirectUrl = req.session.returnTo;
+    delete req.session.returnTo;
     res.redirect(redirectUrl);
   }
 );

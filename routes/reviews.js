@@ -29,7 +29,7 @@ router.post(
 
 router.delete(
   "/:reviewId",
-  isLoggedin,
+  isLoggedIn,
   validateReviewAuthor,
   catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
