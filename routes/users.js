@@ -45,7 +45,7 @@ router.post(
   (req, res) => {
     req.flash("success", "Welcome back our Camp!");
     const redirectUrl = req.cookies.originalUrl || "/campgrounds";
-    delete req.cookies.originalUrl;
+    res.cookie("originalUrl", "");
     res.redirect(redirectUrl);
   }
 );
