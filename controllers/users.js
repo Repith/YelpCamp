@@ -29,7 +29,7 @@ module.exports.login = (req, res) => {
   req.flash("success", "Welcome back our Camp!");
   // const redirectUrl = req.cookie.originalUrl || "/campgrounds";
   // res.cookie("originalUrl", "");
-  const redirectUrl = req.session.returnTo;
+  const redirectUrl = req.session.returnTo || "/campgrounds";
   delete req.session.returnTo;
   res.redirect(redirectUrl);
 };
