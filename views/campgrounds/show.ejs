@@ -4,7 +4,39 @@
 <div class="row">
   <div class="col-6">
     <div class="card mb-3">
-      <img src="<%= campground.image%>" class="card-img-top" alt="..." />
+      <div
+        id="camgroundCarousel"
+        class="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-inner">
+          <% campground.images.forEach((img, i) => { %>
+          <div class="carousel-item <%= i=== 0 ? 'active' : '' %>">
+            <img src="<%=img.url%>" class="d-block w-100" alt="..." />
+          </div>
+          <% }) %>
+        </div>
+        <%if(campground.images.length > 1) { %>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#camgroundCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#camgroundCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+        <% } %>
+      </div>
       <div class="card-body">
         <h5 class="card-title"><%= campground.title%></h5>
         <p class="card-text"><%= campground.description%></p>
@@ -37,6 +69,8 @@
     </div>
   </div>
   <div class="col-6">
+    <div id="map" style="width: 100%; height: 300px" class="mb-3"></div>
+
     <% if(currentUser) { %>
     <h2>Leave a Review</h2>
     <form
@@ -135,3 +169,9 @@
     </div>
   </div>
 </div>
+
+<script>
+  const mapToken = "<%-process.env.MAPBOX_TOKEN%>";
+  const campground = <%- JSON.stringify(campground) %>;
+</script>
+<script src="/js/showPageMap.js"></script>

@@ -15,13 +15,20 @@
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+    <!-- Mapbox GL JS implementation -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
   </head>
   <body class="d-flex flex-column vh-100">
-    <%- include('../partials/navbar') %>
+    <%-include('../partials/navbar')%>
     <main class="container mt-5">
-      <%- include('../partials/flash') %> <%- body %>
+      <%-include('../partials/flash')%> <%-body%>
     </main>
-    <%- include('../partials/footer') %>
+    <%-include('../partials/footer')%>
+    <!-- Bootstrap -->
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
       integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
