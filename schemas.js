@@ -1,6 +1,7 @@
-const Joi = require("joi");
+const BaseJoi = require("joi");
 const sanitizeHtml = require("sanitize-html");
 
+// Joi sanitizeHTML for basic protection
 const extension = (joi) => ({
   type: "string",
   base: joi.string(),

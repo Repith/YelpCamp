@@ -2,7 +2,10 @@
 <div class="row">
   <div class="col-md-6 offset-3">
     <div class="alert alert-danger" role="alert">
-      <h4 class="alert-heading"><%=err.message%> <%=err.statusCode%></h4>
+      <h4 class="alert-heading">
+        <%=err.message%> <% if (process.env.NODE_ENV !== "production") { %>
+        <%=err.statusCode%> <% } %>
+      </h4>
       <p><%=err.stack%></p>
     </div>
   </div>

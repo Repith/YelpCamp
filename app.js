@@ -11,11 +11,17 @@ const ExpressError = require("./utils/ExpressError");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
+const session = require("express-session");
+const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
 
-const session = require("express-session");
-const flash = require("connect-flash");
+const MongoStore = require("connect-mongo");
+
+// const helmet = require("helmet");
+
+const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp";
+// process.env.NODE_ENV
 
 const userRoutes = require("./routes/users");
 const campgroundsRoutes = require("./routes/campgrounds");
@@ -26,7 +32,7 @@ const path = require("path");
 
 // Mongoose configuration
 mongoose.set("strictQuery", false);
-mongoose.connect("mongodb://127.0.0.1:27017/yelp-camp", {
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -53,8 +59,21 @@ app.use(
   })
 );
 
+// NOT WORKING :(
+// const store = new MongoStore({
+//   url: dbUrl,
+//   secret: "secret",
+//   touchAfter: 24 * 60 * 60,
+// });
+
+// store.on("error", function (e) {
+//   console.log("Session store error: ", e);
+// });
+
 // Passport and session config
 const sessionConfig = {
+  // store,
+  name: "session",
   secret: "secret",
   resave: false,
   saveUninitialized: true,
@@ -68,6 +87,54 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// NOT WORKING :(
+// app.use(helmet());
+
+// const scriptSrcUrls = [
+//   "https://stackpath.bootstrapcdn.com/",
+//   "https://api.tiles.mapbox.com/",
+//   "https://api.mapbox.com/",
+//   "https://kit.fontawesome.com/",
+//   "https://cdnjs.cloudflare.com/",
+//   "https://cdn.jsdelivr.net",
+// ];
+// const styleSrcUrls = [
+//   "https://kit-free.fontawesome.com/",
+//   "https://stackpath.bootstrapcdn.com/",
+//   "https://api.mapbox.com/",
+//   "https://api.tiles.mapbox.com/",
+//   "https://fonts.googleapis.com/",
+//   "https://use.fontawesome.com/",
+// ];
+// const connectSrcUrls = [
+//   "https://api.mapbox.com/",
+//   "https://a.tiles.mapbox.com/",
+//   "https://b.tiles.mapbox.com/",
+//   "https://events.mapbox.com/",
+// ];
+// const fontSrcUrls = [];
+// app.use(
+//   helmet.contentSecurityPolicy({
+
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       connectSrc: ["'self'", ...connectSrcUrls],
+//       scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+//       styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+//       workerSrc: ["'self'", "blob:"],
+//       objectSrc: [],
+//       imgSrc: [
+//         "'self'",
+//         "blob:",
+//         "data:",
+//         "https://res.cloudinary.com/dl5q2i8hc/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+//         "https://images.unsplash.com/",
+//       ],
+//       fontSrc: ["'self'", ...fontSrcUrls],
+//     },
+//   })
+// );
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
